@@ -1,25 +1,26 @@
 import java.util.Random;
 public class YahtzeeProcedural {
 
-    public static int[] lanceurDes(){
+    public static int lanceurDes(Random nbr) {
+        return nbr.nextInt(6) + 1;
+    }
 
-        Random lanceurDes = new Random();
-        int[] des = new int[5];
-
-        for (int i = 0; i < 5; i++) {
-
-            //On fait 6+1 sinon on aura 0
-            des[i] = lanceurDes.nextInt(6) + 1;
+    public static void afficherDes(int [] des){
+        for (int i = 0; i < des.length; i++) {
+            System.out.println("{" + (i + 1) +")" + des[i]);
         }
-        return des;
     }
 
     public static void main(String[] args) {
 
-        int[] des = lanceurDes();
+        Random nbr = new Random();
+        int[] des = new int[5];
 
-        for (int i = 0; i < 5; i++) {
-            System.out.println("{" + (i + 1) +")" + des[i]);
+        for (int i = 0; i < des.length; i++) {
+
+            des[i] = lanceurDes(nbr);
         }
+
+        afficherDes(des);
     }
 }
