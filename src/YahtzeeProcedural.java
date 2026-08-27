@@ -15,9 +15,9 @@ public class YahtzeeProcedural {
 
     public static int[] relanceurDe(String saisie) {
 
-        System.out.println("Saisir les dés que vous voulez relancer (1-5)");
-        System.out.println("Séparer avec espace");
-        System.out.println("Laissez vide ou mettez 0 si vous ne voulez pas relancer");
+        System.out.println("Saisir les dés que vous voulez relancer (1-5)\n"+
+        "Séparer avec espace\n"+
+        "Laissez vide ou mettez 0 si vous ne voulez pas relancer");
 
         String[] positions = saisie.split(" ");
         int[] relance = new int[positions.length];
@@ -55,10 +55,7 @@ public class YahtzeeProcedural {
 
         int[] relance = relanceurDe(saisie);
 
-
-            for (int i = 0; i < relance.length; i++) {
-                int position = relance[i];
-
+            for (int position : relance) {
                 des[position - 1] = lanceurDes(nbr);
             }
 
