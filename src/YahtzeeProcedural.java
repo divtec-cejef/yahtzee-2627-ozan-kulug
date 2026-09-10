@@ -2,6 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class YahtzeeProcedural {
+    static int NOMBRE_RELANCE_PLUS = 2;
 
     public static int lanceurDes(Random nbr) {
         return nbr.nextInt(6) + 1;
@@ -13,24 +14,43 @@ public class YahtzeeProcedural {
         }
     }
 
-    public static int[] relanceurDe(String saisie) {
-
-        System.out.println("Saisir les dés que vous voulez relancer (1-5)\n"+
-        "Séparer avec espace\n"+
-        "Laissez vide ou mettez 0 si vous ne voulez pas relancer");
-
-        String[] positions = saisie.split(" ");
-        int[] relance = new int[positions.length];
+    public static void relanceurDe(int[] positions, int[] des, Random nbr) {
 
         for (int i = 0; i < positions.length; i++) {
+            des[positions[i]] = lanceurDes(nbr);
+        }
+    }
+
+
+    public static boolean demandeRelance(Scanner lecteur, int[] des, Random nbr) {
+
+        System.out.println("""
+                Saisir les dés que vous voulez relancer (1-5)
+                Séparer avec espace
+                Laissez vide ou mettez 0 si vous ne voulez pas relancer""");
+
+        String saisie = lecteur.nextLine();
+
+        if (saisie.equals("0") || saisie.isEmpty()) {
+            return false;
+        }
+
+
+        String[] positions = saisie.split(" ");
+
+        int[] indices = new int[positions.length];
+        for (int i = 0; i < positions.length; i++) {
+
             int numero = Integer.parseInt(positions[i]);
 
             if (numero >= 1 && numero <= 5) {
-                relance[i] = numero;
+                indices[i] = numero - 1;
+            } else {
+                return false;
             }
         }
-
-        return relance;
+        relanceurDe(indices, des, nbr);
+        return true;
     }
 
     public static void main(String[] args) {
@@ -45,21 +65,17 @@ public class YahtzeeProcedural {
 
         Scanner lecteur = new Scanner(System.in);
 
-        for (int nombreLancer = 1; nombreLancer <= 3; nombreLancer++) {
+        for (int nombreLancer = 1;
+             nombreLancer <= NOMBRE_RELANCE_PLUS;
+             nombreLancer++) {
 
-        String saisie = lecteur.nextLine();
+            boolean continuer = demandeRelance(lecteur, des, nbr);
 
-            if (saisie.equals("0")|| saisie.isEmpty()) {
+            afficherDes(des);
+
+            if (!continuer) {
                 break;
             }
-
-        int[] relance = relanceurDe(saisie);
-
-            for (int position : relance) {
-                des[position - 1] = lanceurDes(nbr);
-            }
-
-        afficherDes(des);
+        }
     }
-}
 }
