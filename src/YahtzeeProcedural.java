@@ -15,14 +15,12 @@ public class YahtzeeProcedural {
     }
 
     public static void relanceurDe(int[] positions, int[] des, Random nbr) {
-
         for (int i = 0; i < positions.length; i++) {
             des[positions[i]] = lanceurDes(nbr);
         }
     }
 
-
-    public static boolean demandeRelance(Scanner lecteur, int[] des, Random nbr) {
+    public static int[] demandeRelance(Scanner lecteur) {
 
         System.out.println("""
                 Saisir les dés que vous voulez relancer (1-5)
@@ -31,34 +29,31 @@ public class YahtzeeProcedural {
 
         String saisie = lecteur.nextLine();
 
-        if (saisie.equals("0") || saisie.isEmpty()) {
-            return false;
+        if (saisie.isEmpty() || saisie.equals("0")) {
+            return new int[0];
         }
-
-
         String[] positions = saisie.split(" ");
 
         int[] indices = new int[positions.length];
         for (int i = 0; i < positions.length; i++) {
 
-            int numero = Integer.parseInt(positions[i]);
+            int numero = Integer.parseInt(positions[i]) - 1;
 
-            if (numero >= 1 && numero <= 5) {
-                indices[i] = numero - 1;
+            if (numero >= 0 && numero <= 4) {
+                indices[i] = numero;
             } else {
-                return false;
+                return new int[0];
             }
         }
-        relanceurDe(indices, des, nbr);
-        return true;
+        return indices;
     }
+
 
     public static void main(String[] args) {
         Random nbr = new Random();
         int[] des = new int[5];
 
         for (int i = 0; i < des.length; i++) {
-
             des[i] = lanceurDes(nbr);
         }
         afficherDes(des);
@@ -69,13 +64,15 @@ public class YahtzeeProcedural {
              nombreLancer <= NOMBRE_RELANCE_PLUS;
              nombreLancer++) {
 
-            boolean continuer = demandeRelance(lecteur, des, nbr);
+            int[] indices = demandeRelance(lecteur);
 
-            afficherDes(des);
-
-            if (!continuer) {
+            if (indices.length == 0) {
                 break;
             }
+
+            relanceurDe(indices, des, nbr);
+
+            afficherDes(des);
         }
     }
 }
