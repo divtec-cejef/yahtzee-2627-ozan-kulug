@@ -57,7 +57,7 @@ public class YahtzeeProcedural {
         return occurrences;
     }
 
-    public static boolean contientCombien(int[] occurrences, int nombre){
+    public static boolean contientExacte(int[] occurrences, int nombre) {
 
         for (int i = 0; i < occurrences.length;i ++){
             if(occurrences[i] == nombre){
@@ -65,81 +65,97 @@ public class YahtzeeProcedural {
             }
         }return false;
     }
+    public static boolean contientAuMoins(int[] occurrences, int nombre){
+        for (int i = 0; i < occurrences.length; i++) {
+            if (occurrences[i] >= nombre) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean estUnePaire(int [] occurrences){
-        return contientCombien(occurrences, 2);
+        return contientAuMoins(occurrences, 2);
     }
 
     public static boolean estBrelan(int[] occurrences){
-        return contientCombien(occurrences, 3);
+        return contientAuMoins(occurrences, 3);
     }
 
     public static boolean estCarre(int[] occurrences){
-        return contientCombien(occurrences, 4);
+        return contientAuMoins(occurrences, 4);
     }
+
     public static boolean estYahtzee(int[] occurrences){
-        return contientCombien(occurrences, 5);
+        return contientExacte(occurrences, 5);
     }
 
     public static boolean deuxPaires(int[] occurrences){
         int compteur = 0;
         for(int i = 0; i < occurrences.length; i++){
-            if (occurrences[i] == 2){
+            if (occurrences[i] >= 2) {
                 compteur++;
             }
-        }return compteur == 2;
+        }
+        return compteur == 2;
     }
 
     public static boolean estFullHouse(int[] occurrences){
-        return contientCombien(occurrences, 2) && contientCombien(occurrences, 3);
+        return contientExacte(occurrences, 2) && contientExacte(occurrences, 3);
     }
 
     public static boolean estPetiteSuite(int[] occurrences){
-        return (occurrences[0] > 0 &&  occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0)
+        return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0)
                 || (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0)
                 || (occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 && occurrences[5] > 0);
     }
 
     public static boolean estGrandeSuite(int[] occurrences) {
-        return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 )
+        return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0)
                 || (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 && occurrences[5] > 0);
     }
 
     public static int sommeDes(int[] des ){
         int somme = 0;
-        for(int i = 0; i < des.length; i++){
-            somme += des[i];        }
+        for (int i = 0; i < des.length; i++) {
+            somme += des[i];
+        }
         return somme;
     }
 
-    public static int calculerScore(int[] des, int[] occurrences){
-        switch ()
-        if (estYahtzee(occurrences)) {
-            return 50;
-        }
-        if (estGrandeSuite(occurrences)) {
-            return 40;
-        }
-        if (estPetiteSuite(occurrences)) {
-            return 30;
-        }
-        if (estFullHouse(occurrences)) {
-            return 25;
-        }
-        if (estCarre(occurrences)) {
-            return sommeDes(des);
-        }
-        if (estBrelan(occurrences)) {
-            return sommeDes(des);
-        }
-        if (deuxPaires(occurrences)) {
-            return 10;
-        }
-        if (estUnePaire(occurrences)) {
-            return 5;
+    public static int scoreRepetition(int[] occurrences, int nombre) {
+        for (int i = 0; i < occurrences.length; i++) {
+            if (occurrences[i] >= nombre) {
+                return (i + 1) * nombre;
+            }
         }
         return 0;
     }
+    public static void calculerScore(int[] des, int[] occurrences) {
+        String[] categories = {
+                "Yahtzee", "Grande Suite", "Petite Suite", "Full House",
+                "Carre", "Brelan", "Deux Paires", "Paire"
+        };
+
+        for (String categorie : categories) {
+
+            int score = 0;
+
+            switch (categorie) {
+                case "Yahtzee" -> score = estYahtzee(occurrences) ? 50 : 0;
+                case "Grande Suite" -> score = estGrandeSuite(occurrences) ? 40 : 0;
+                case "Petite Suite" -> score = estPetiteSuite(occurrences) ? 30 : 0;
+                case "Full House" -> score = estFullHouse(occurrences) ? 25 : 0;
+                case "Carre" -> score = estCarre(occurrences) ? scoreRepetition(occurrences, 4) : 0;
+                case "Brelan" -> score = estBrelan(occurrences) ? scoreRepetition(occurrences, 3) : 0;
+                case "Deux Paires" -> score = deuxPaires(occurrences) ? 10 : 0;
+                case "Paire" -> score = estUnePaire(occurrences) ? 5 : 0;
+            }
+            System.out.println(categorie + " : " + score);
+
+        }
+    }
+
 
     public static void main(String[] args) {
         Random nbr = new Random();
@@ -167,8 +183,7 @@ public class YahtzeeProcedural {
             afficherDes(des);
         }
         int[] occurrences = compterOccurrences(des);
-        int score = calculerScore(des, occurrences);
+        calculerScore(des, occurrences);
 
-        System.out.println("Score final : " + score);
     }
 }
