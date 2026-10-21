@@ -27,7 +27,8 @@ public class YahtzeeProcedural {
     }
 
     public static int[] demandeRelance(Scanner lecteur) {
-        System.out.println("Quels dés relancer ? (positions séparées par un espace, vide ou 0 pour arrêter)");        String saisie = lecteur.nextLine();
+        System.out.println("Quels dés relancer ? (positions séparées par un espace, vide ou 0 pour arrêter)");
+        String saisie = lecteur.nextLine();
         if (saisie.isEmpty() || saisie.equals("0")) {
             return new int[0];
         }
@@ -178,38 +179,44 @@ public class YahtzeeProcedural {
         Scanner lecteur = new Scanner(System.in);
         String utilisees = "";
 
+        int total = 0;
         for (int manche = 1; manche <= 5; manche++) {
             int[] des = new int[5];
 
 
-        for (int i = 0; i < des.length; i++) {
-            des[i] = lanceurDes(nbr);
-        }
-        afficherDes(des);
-
-
-        for (int nombreLancer = 1;
-             nombreLancer <= NOMBRE_RELANCE_PLUS;
-             nombreLancer++) {
-            int[] indices = demandeRelance(lecteur);
-
-            if (indices.length == 0) {
-                break;
+            for (int i = 0; i < des.length; i++) {
+                des[i] = lanceurDes(nbr);
             }
-
-            relanceurDe(indices, des, nbr);
-
             afficherDes(des);
+
+
+            for (int nombreLancer = 1;
+                 nombreLancer <= NOMBRE_RELANCE_PLUS;
+                 nombreLancer++) {
+                int[] indices = demandeRelance(lecteur);
+
+                if (indices.length == 0) {
+                    break;
+                }
+
+                relanceurDe(indices, des, nbr);
+
+                afficherDes(des);
+            }
+            int[] occurrences = compterOccurrences(des);
+
+            afficherDisponibles(utilisees, occurrences);
+
+            int choix = choisirCombinaison(occurrences, utilisees, lecteur);
+            int score = calculerScore(nomCategorie(choix), occurrences);
+            utilisees += choix;
+
+            System.out.println("\nScore obtenu pour " + nomCategorie(choix) + " : " + score);
+
+            total += score;
+            System.out.println ("Score total : " + total + "\n");
+
         }
-        int[] occurrences = compterOccurrences(des);
-
-        afficherDisponibles(utilisees, occurrences);
-
-        int choix = choisirCombinaison(occurrences, utilisees, lecteur);
-        int score = calculerScore(nomCategorie(choix), occurrences);
-        utilisees += choix;
-
-        System.out.println("\nScore obtenu pour " + nomCategorie(choix) + " : " + score);
-    }
+        System.out.println("Score final : " + total);
     }
 }
